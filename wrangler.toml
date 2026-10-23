@@ -1,0 +1,18 @@
+// functions/api/hello.ts
+interface Env {
+  // 这里可以定义绑定的环境变量、KV、D1 数据库等
+  MY_KV?: KVNamespace;
+}
+
+export const onRequest: PagesFunction<Env> = async (context) => {
+  const { request, env } = context;
+  const url = new URL(request.url);
+
+  return new Response(JSON.stringify({
+    message: "来自 Cloudflare 边缘计算的响应！",
+    timestamp: Date.now(),
+    path: url.pathname
+  }), {
+    headers: { "Content-Type": "application/json" }
+  });
+};
