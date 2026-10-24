@@ -1,0 +1,138 @@
+[
+    {
+        "id": "q-001",
+        "type": "single",
+        "stem": "Vue 3 的核心响应式能力主要依赖什么？",
+        "options": [
+            "Proxy",
+            "Async/Await",
+            "WebSocket",
+            "Canvas"
+        ],
+        "answer": "A",
+        "score": 1,
+        "analysis": "Vue 3 的响应式系统核心使用 Proxy 来实现数据劫持与依赖收集。"
+    },
+    {
+        "id": "q-002",
+        "type": "single",
+        "stem": "Pinia 是什么？",
+        "options": [
+            "状态管理库",
+            "网络请求库",
+            "路由库",
+            "日期库"
+        ],
+        "answer": "A",
+        "score": 1,
+        "analysis": "Pinia 是 Vue 3 官方推荐的状态管理库，用于集中管理应用状态。"
+    },
+    {
+        "id": "q-003",
+        "type": "multiple",
+        "stem": "以下哪些是前端静态托管部署的适用场景？",
+        "options": [
+            "GitHub Pages",
+            "Cloudflare Pages",
+            "Netlify",
+            "自建 Node 后端服务"
+        ],
+        "answer": [
+            "A",
+            "B",
+            "C"
+        ],
+        "score": 2,
+        "analysis": "GitHub Pages、Cloudflare Pages、Netlify 都是常见的静态站点托管服务；自建 Node 后端不是静态托管。"
+    },
+    {
+        "id": "q-004",
+        "type": "judge",
+        "stem": "在纯前端项目中，所有题目数据都可以直接存放在浏览器本地。",
+        "answer": "A",
+        "score": 1,
+        "analysis": "这是正确的，因为本项目要求纯前端、无后端和无数据库，所有状态数据都保存在浏览器本地。"
+    },
+    {
+        "id": "q-005",
+        "type": "single",
+        "stem": "Vue Router 的 hash 模式使用什么符号作为路由分隔？",
+        "options": [
+            "#",
+            "/",
+            "?",
+            "&"
+        ],
+        "answer": "A",
+        "score": 1,
+        "analysis": "hash 模式使用 URL 中的 # 符号作为路由标识，适合静态站点。"
+    },
+    {
+        "id": "q-006",
+        "type": "single",
+        "stem": "下面哪个不是 Vite 的特点？",
+        "options": [
+            "启动快",
+            "原生 ES Module",
+            "强制依赖后端",
+            "热更新快"
+        ],
+        "answer": "C",
+        "score": 1,
+        "analysis": "Vite 适合前端开发，具有快速启动和热更新能力，不强制依赖后端。"
+    },
+    {
+        "id": "q-007",
+        "type": "multiple",
+        "stem": "下面哪些因素会影响前端应用的访问体验？",
+        "options": [
+            "首屏加载速度",
+            "图片体积",
+            "网络环境",
+            "后端接口稳定性"
+        ],
+        "answer": [
+            "A",
+            "B",
+            "C"
+        ],
+        "score": 2,
+        "analysis": "首屏、图片、网络环境都会影响用户体验；这里强调前端访问体验。"
+    },
+    {
+        "id": "q-008",
+        "type": "judge",
+        "stem": "在本项目中，交卷评分必须在后端完成。",
+        "answer": "B",
+        "score": 1,
+        "analysis": "项目要求前端本地评分，不做后端 API，所以此说法错误。"
+    },
+    {
+        "id": "q-009",
+        "type": "single",
+        "stem": "在 TypeScript 中，以下哪个类型适合表示题目选项？",
+        "options": [
+            "string[]",
+            "number",
+            "boolean",
+            "Record<string, number>"
+        ],
+        "answer": "A",
+        "score": 1,
+        "analysis": "题目选项通常是字符串数组，代表多个选项文本。"
+    },
+    {
+        "id": "q-010",
+        "type": "single",
+        "stem": "本项目中为了保证静态部署兼容性，路由应使用哪种模式？",
+        "options": [
+            "hash 模式",
+            "memory 模式",
+            "history 模式",
+            "worker 模式"
+        ],
+        "answer": "A",
+        "score": 1,
+        "analysis": "静态托管环境下，hash 模式最稳妥，不依赖服务器重写规则。"
+    }
+]
