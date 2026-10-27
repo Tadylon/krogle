@@ -1,11 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
+import QuizView from '@/views/QuizView.vue';
+import ResultView from '@/views/ResultView.vue';
 
-const router = createRouter({
+export default createRouter({
     history: createWebHashHistory(),
     routes: [
         { path: '/', redirect: '/quiz' },
-        { path: '/quiz', component: () => import('@/views/QuizView.vue') },
-        { path: '/result', component: () => import('@/views/ResultView.vue') },
+        { path: '/quiz', component: QuizView },
+        { path: '/result', component: ResultView },
     ],
 });
-export default router;
