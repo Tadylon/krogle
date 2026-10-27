@@ -1,77 +1,78 @@
 import type { Question } from '@/types/quiz';
 
-export interface QuizResultItem {
+export interface ResultItem {
     id: string;
     stem: string;
     type: Question['type'];
     userAnswer: string | string[];
     correctAnswer: string | string[];
-    correct: boolean;
+    isCorrect: boolean;
     score: number;
-    analysis?: string;
+    analysis: string;
 }
 
-export interface QuizEvaluation {
+export interface ScoreResult {
     totalScore: number;
     earnedScore: number;
-    percentage: number;
-    results: QuizResultItem[];
+    correctCount: number;
+    wrongCount: number;
+    accuracy: number;
+    items: ResultItem[];
 }
 
 function normalizeAnswer(value: string | string[] | undefined): string[] {
-    if (Array.isArray(value)) {
-        return [...value].sort();
-    }
-    if (typeof value === 'string' && value) {
-        return [value];
-    }
+    if (Array.isArray(value)) return [...value].sort();
+    if (typeof value === 'string' && value) return [value];
     return [];
 }
 
-function sameArray(a: string[], b: string[]) {
-    return a.length === b.length && a.every((v, i) => v === b[i]);
+function isCorrect(question: Question, userAnswer: string | string[] | undefined): boolean {
+    const expected = normalizeAnswer(question.answer);
+    const actual = normalizeAnswer(userAnswer);
+
+    if (expected.length !== actual.length) return false;
+    return expected.every((v, i) => v === actual[i]);
 }
 
-export function evaluateQuiz(
+export function scoreQuiz(
     questions: Question[],
     answers: Record<string, string | string[]>
-): QuizEvaluation {
+): ScoreResult {
     let earnedScore = 0;
+    let correctCount = 0;
     const totalScore = questions.reduce((sum, q) => sum + (q.score ?? 1), 0);
 
-    const results = questions.map((question) => {
-        const userAnswer = answers[question.id];
-        const correctAnswer = question.answer;
-        const userNorm = normalizeAnswer(userAnswer);
-        const correctNorm = normalizeAnswer(correctAnswer);
+    const items: ResultItem[] = questions.map((q) => {
+        const correct = isCorrect(q, answers[q.id]);
+        const score = correct ? (q.score ?? 1) : 0;
+        const userAnswer = answers[q.id] ?? (q.type === 'multiple' ? [] : '');
 
-        let correct = false;
-
-        if (question.type === 'multiple') {
-            correct = sameArray(userNorm, correctNorm);
-        } else {
-            correct = userNorm.join(',') === correctNorm.join(',');
+        if (correct) {
+            earnedScore += score;
+            correctCount += 1;
         }
 
-        const score = correct ? question.score ?? 1 : 0;
-        earnedScore += score;
-
         return {
-            id: question.id,
-            stem: question.stem,
-            type: question.type,
-            userAnswer: userAnswer ?? (question.type === 'multiple' ? [] : ''),
-            correctAnswer,
-            correct,
+            id: q.id,
+            stem: q.stem,
+            type: q.type,
+            userAnswer,
+            correctAnswer: q.answer,
+            isCorrect: correct,
             score,
-            analysis: question.analysis ?? '',
+            analysis: q.analysis ?? '',
         };
     });
+
+    const wrongCount = questions.length - correctCount;
+    const accuracy = questions.length ? (correctCount / questions.length) * 100 : 0;
 
     return {
         totalScore,
         earnedScore,
-        percentage: totalScore ? (earnedScore / totalScore) * 100 : 0,
-        results,
+        correctCount,
+        wrongCount,
+        accuracy,
+        items,
     };
 }

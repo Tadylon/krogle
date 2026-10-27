@@ -1,3 +1,4 @@
+<!-- filepath: c:\Project\learning-front-back\frontend_projects\krogle\src\components\AnswerSheet.vue -->
 <script setup lang="ts">
 import type { Question } from '@/types/quiz';
 
@@ -5,6 +6,7 @@ const props = defineProps<{
   questions: Question[];
   answers: Record<string, string | string[]>;
   markedIds: string[];
+  visitedIds: string[];
   currentIndex: number;
 }>();
 
@@ -12,39 +14,38 @@ const emit = defineEmits<{
   (e: 'jump', index: number): void;
 }>();
 
-function isAnswered(question: Question) {
-  const value = props.answers[question.id];
+function isAnswered(id: string) {
+  const value = props.answers[id];
   if (Array.isArray(value)) return value.length > 0;
-  return value !== undefined && value !== '';
+  return typeof value === 'string' && value.length > 0;
 }
 
-function isMarked(qid: string) {
-  return props.markedIds.includes(qid);
-}
+function getClass(index: number) {
+  const q = props.questions[index];
+  if (!q) return '';
+  const active = index === props.currentIndex;
+  const marked = props.markedIds.includes(q.id);
+  const answered = isAnswered(q.id);
+  const visited = props.visitedIds.includes(q.id);
 
-function getStateClass(index: number) {
-  const question = props.questions[index];
-  if (!question) return 'blank';
-  const answered = isAnswered(question);
-  const marked = isMarked(question.id);
-  const active = props.currentIndex === index;
-
-  if (active) return 'active';
-  if (marked && !answered) return 'marked';
-  if (answered) return 'answered';
-  return 'unanswered';
+  return {
+    active,
+    marked,
+    answered,
+    visited: visited && !answered,
+  };
 }
 </script>
 
 <template>
-  <aside class="answer-sheet">
+  <aside class="sheet">
     <h3>答题卡</h3>
     <div class="grid">
       <button
-        v-for="(question, index) in questions"
-        :key="question.id"
-        class="sheet-item"
-        :class="getStateClass(index)"
+        v-for="(q, index) in questions"
+        :key="q.id"
+        class="item"
+        :class="getClass(index)"
         @click="emit('jump', index)"
       >
         {{ index + 1 }}
@@ -54,50 +55,34 @@ function getStateClass(index: number) {
 </template>
 
 <style scoped>
-.answer-sheet {
-  background: #fff;
+.sheet {
   border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 14px;
 }
-
-.answer-sheet h3 {
-  margin: 0 0 12px;
-  font-size: 1.05rem;
-}
-
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(36px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
 }
-
-.sheet-item {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 10px;
-  border: 1px solid #d9d9d9;
-  background: #f9fafb;
-  font-weight: 700;
+.item {
+  height: 38px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
   cursor: pointer;
 }
-
-.sheet-item.active {
-  border-color: #3b82f6;
+.item.visited {
+  background: #f3f4f6;
+}
+.item.answered {
   background: #dbeafe;
+  border-color: #3b82f6;
 }
-
-.sheet-item.answered {
-  background: #dcfce7;
-  border-color: #22c55e;
+.item.marked {
+  box-shadow: inset 0 0 0 2px #f59e0b;
 }
-
-.sheet-item.marked {
-  background: #fef3c7;
-  border-color: #f59e0b;
-}
-
-.sheet-item.unanswered {
-  background: #f9fafb;
+.item.active {
+  border-color: #111827;
 }
 </style>

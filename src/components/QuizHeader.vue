@@ -1,81 +1,55 @@
+<!-- filepath: c:\Project\learning-front-back\frontend_projects\krogle\src\components\QuizHeader.vue -->
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue';
+
+const props = defineProps<{
   currentIndex: number;
   total: number;
   answeredCount: number;
   progress: number;
+  elapsedSeconds: number;
 }>();
+
+const timeText = computed(() => {
+  const min = Math.floor(props.elapsedSeconds / 60);
+  const sec = props.elapsedSeconds % 60;
+  return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+});
 </script>
 
 <template>
   <header class="quiz-header">
-    <div class="top-bar">
-      <div class="title-wrap">
-        <h2>在线题库</h2>
-        <span>{{ currentIndex + 1 }}/{{ total }}</span>
-      </div>
-      <div class="meta">
-        <span>已答 {{ answeredCount }}</span>
-      </div>
+    <div class="row">
+      <div>题号：{{ currentIndex + 1 }} / {{ total }}</div>
+      <div>已答：{{ answeredCount }}</div>
+      <div>用时：{{ timeText }}</div>
     </div>
-
-    <div class="progress-wrap">
-      <div class="progress-bar">
-        <div class="progress-fill" :style="{ width: `${progress}%` }" />
-      </div>
-      <span>{{ Math.round(progress) }}%</span>
+    <div class="bar">
+      <div class="fill" :style="{ width: `${progress}%` }"></div>
     </div>
   </header>
 </template>
 
 <style scoped>
 .quiz-header {
-  padding: 18px 20px 10px;
-  background: #ffffff;
+  padding: 16px 20px;
   border-bottom: 1px solid #e5e7eb;
 }
-
-.top-bar {
+.row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  color: #374151;
 }
-
-.title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.title-wrap h2 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.meta {
-  color: #6b7280;
-  font-size: 0.9rem;
-}
-
-.progress-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.progress-bar {
-  flex: 1;
+.bar {
   height: 10px;
-  background: #e5e7eb;
   border-radius: 999px;
+  background: #e5e7eb;
   overflow: hidden;
 }
-
-.progress-fill {
+.fill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #22c55e);
-  border-radius: 999px;
-  transition: width 0.2s ease;
+  background: #3b82f6;
+  transition: width 0.2s;
 }
 </style>

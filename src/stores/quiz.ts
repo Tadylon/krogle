@@ -11,12 +11,17 @@ export const useQuizStore = defineStore(
         const markedIds = ref<string[]>([]);
         const visitedIds = ref<string[]>([]);
         const isSubmitted = ref(false);
+        const startedAt = ref<number | null>(null);
 
         const currentQuestion = computed(() => questions.value[currentIndex.value] ?? null);
         const answeredCount = computed(() => Object.keys(answers.value).length);
         const progress = computed(() =>
             questions.value.length ? (answeredCount.value / questions.value.length) * 100 : 0
         );
+
+        function startSession() {
+            if (!startedAt.value) startedAt.value = Date.now();
+        }
 
         function setQuestions(list: Question[]) {
             questions.value = list;
@@ -27,6 +32,11 @@ export const useQuizStore = defineStore(
             if (currentIndex.value >= questions.value.length) {
                 currentIndex.value = 0;
             }
+            const q = questions.value[currentIndex.value];
+            if (q && !visitedIds.value.includes(q.id)) {
+                visitedIds.value.push(q.id);
+            }
+            startSession();
         }
 
         function setAnswer(qid: string, value: string | string[]) {
@@ -65,6 +75,7 @@ export const useQuizStore = defineStore(
             visitedIds.value = [];
             currentIndex.value = 0;
             isSubmitted.value = false;
+            startedAt.value = null;
         }
 
         return {
@@ -74,9 +85,11 @@ export const useQuizStore = defineStore(
             markedIds,
             visitedIds,
             isSubmitted,
+            startedAt,
             currentQuestion,
             answeredCount,
             progress,
+            startSession,
             setQuestions,
             setAnswer,
             goTo,
@@ -88,7 +101,14 @@ export const useQuizStore = defineStore(
     {
         persist: {
             key: 'quiz-store',
-            pick: ['answers', 'markedIds', 'visitedIds', 'currentIndex', 'isSubmitted'],
+            pick: [
+                'answers',
+                'markedIds',
+                'visitedIds',
+                'currentIndex',
+                'isSubmitted',
+                'startedAt',
+            ],
         },
     }
 );

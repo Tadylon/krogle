@@ -1,13 +1,13 @@
-<!-- components/QuizPlayer.vue -->
+<!-- filepath: c:\Project\learning-front-back\frontend_projects\krogle\src\components\QuizPlayer.vue -->
 <script setup lang="ts">
-import { computed } from 'vue';
-import SingleChoice from './question-types/SingleChoice.vue';
-import MultipleChoice from './question-types/MultipleChoice.vue';
-import JudgeQuestion from './question-types/JudgeQuestion.vue';
+import { computed, type Component } from 'vue';
 import type { Question } from '@/types/quiz';
+import SingleChoice from '@/components/question-types/SingleChoice.vue';
+import MultipleChoice from '@/components/question-types/MultipleChoice.vue';
+import JudgeQuestion from '@/components/question-types/JudgeQuestion.vue';
 
 const props = defineProps<{
-  question: Question | null;
+  question: Question;
   modelValue: string | string[];
 }>();
 
@@ -15,25 +15,20 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string | string[]): void;
 }>();
 
-const componentMap = {
+const componentMap: Record<Question['type'], Component> = {
   single: SingleChoice,
   multiple: MultipleChoice,
   judge: JudgeQuestion,
-} as const;
+};
 
-const currentComponent = computed(() => {
-  if (!props.question) return null;
-  return componentMap[props.question.type];
-});
+const currentComponent = computed(() => componentMap[props.question.type]);
 </script>
 
 <template>
-  <div v-if="question && currentComponent">
-    <component
-      :is="currentComponent"
-      :question="question"
-      :modelValue="modelValue"
-      @update:modelValue="emit('update:modelValue', $event)"
-    />
-  </div>
+  <component
+    :is="currentComponent"
+    :question="question"
+    :model-value="modelValue"
+    @update:model-value="emit('update:modelValue', $event)"
+  />
 </template>
